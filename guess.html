@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Guess Number</title>
+  <style>
+    body { 
+      background:#0f172a; 
+      color:white; 
+      font-family:Arial; 
+      text-align:center; 
+      padding-top:50px;
+    }
+    .card { 
+      background:#020617; 
+      padding:25px; 
+      width:350px; 
+      margin:auto; 
+      border-radius:10px; 
+    }
+    button, input { 
+      padding:10px; 
+      margin-top:10px; 
+      width:90%; 
+    }
+    #msg { 
+      min-height: 40px; 
+      margin-top:10px; 
+      color: #ff7b72;
+    }
+    #hints-box {
+      background: #111827;
+      border: 1px solid #2563eb;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 8px;
+      min-height: 50px;
+      color: #facc15;
+      text-align: left;
+    }
+    #hints-box h4 {
+      margin: 0 0 5px 0;
+      color: #2563eb;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Guess Number</h1>
+<h3 id="coins"></h3>
+
+<div class="card">
+  <input type="number" id="guess" placeholder="Your guess">
+  <button id="submitBtn">Guess</button>
+  <p id="msg"></p>
+  
+  <!-- Hints box -->
+  <div id="hints-box">
+    <h4>Hints:</h4>
+    <div id="hints"></div>
+  </div>
+</div>
+
+<script>
+let coins = Number(localStorage.getItem("coins")) || 0;
+document.getElementById("coins").innerText = "🪙 Coins: " + coins;
+
+let difficulty = localStorage.getItem("guess_difficulty") || "easy";
+const cooldowns = { easy: 5*60*1000, medium: 15*60*1000, hard: 30*60*1000 };
+const lastKey = "guessLast_" + difficulty;
+
+let msg = document.getElementById("msg");
+let hintsDisplay = document.getElementById("hints");
+
+let min = 1, max = 10;
+let freeHints = 0;
+
+if(difficulty === "medium") {
+  max = 50;
+  freeHints = 1;
+} else if(difficulty === "hard") {
+  max = 100;
+  freeHints = 2;
+}
+
+// force input box min/max
+let guessInput = document.getElementById("guess");
+guessInput.setAttribute("min", min);
+guessInput.setAttribute("max", max);
+
+let secret = Math.floor(Math.random()*(max-min+1)) + min;
+let attempts = 0;
+
+// Cooldown check
+function checkCooldown(){
+  let last = Number(localStorage.getItem(lastKey)) || 0;
+  let now = Date.now();
+  if(now - last < cooldowns[difficulty]){
+    let mins = Math.ceil((cooldowns[difficulty] - (now - last))/60000);
+    msg.innerText = `⏳ Come back in ${mins} min`;
+    document.getElementById("submitBtn").disabled = true;
+    return false;
+  } else {
+    document.getElementById("submitBtn").disabled = false;
+    msg.innerText = "";
+    return true;
+  }
+}
+
+checkCooldown();
+
+// Show initial free hints with progressive narrowing
+function showHints() {
+  let hintArr = [];
+  let tempMin = min;
+  let tempMax = max;
+
+  for(let i=0; i<freeHints; i++){
+    let mid = Math.floor((tempMin + tempMax)/2);
+    if(secret <= mid){
+      hintArr.push(`The number is ≤ ${mid}`);
+      tempMax = mid;
+    } else {
+      hintArr.push(`The number is ≥ ${mid + 1}`);
+      tempMin = mid + 1;
+    }
+  }
+
+  hintsDisplay.innerHTML = hintArr.join("<br>");
+}
+
+showHints();
+
+// Submit guess
+document.getElementById("submitBtn").onclick = () => {
+  if(!checkCooldown()) return;
+
+  let user = Number(guessInput.value);
+
+  // validate input
+  if(isNaN(user)){
+    msg.innerText = `Enter a number between ${min} and ${max}`;
+    msg.style.color = "orange";
+    return;
+  }
+  if(user < min || user > max){
+    msg.innerText = `Number must be between ${min} and ${max}`;
+    msg.style.color = "orange";
+    return;
+  }
+
+  attempts++;
+  if(user === secret){
+    let reward = difficulty==="easy"?5: difficulty==="medium"?10:20;
+    coins += reward;
+    localStorage.setItem("coins", coins);
+    document.getElementById("coins").innerText = "🪙 Coins: " + coins;
+    msg.innerText = `✅ Correct! +${reward} coins in ${attempts} attempts`;
+    msg.style.color = "green";
+    localStorage.setItem(lastKey, Date.now());
+    document.getElementById("submitBtn").disabled = true;
+  } else {
+    msg.innerText = `❌ Wrong guess. Attempts: ${attempts}`;
+    msg.style.color = "red";
+  }
+};
+</script>
+
+</body>
+</html>

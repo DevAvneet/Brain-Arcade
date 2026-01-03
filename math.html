@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Math Game</title>
+  <style>
+    body { background:#0f172a; color:white; font-family:Arial; text-align:center; padding-top:50px;}
+    .card { background:#020617; padding:25px; width:350px; margin:auto; border-radius:10px; }
+    button, input { padding:10px; margin-top:10px; width:90%; }
+    #msg { min-height: 30px; margin-top:10px; }
+
+    #hints-box {
+      display: none;
+      background: #111827;
+      border: 1px solid #2563eb;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 8px;
+      min-height: 50px;
+      color: #facc15;
+      text-align: left;
+    }
+    #hints-box h4 {
+      margin: 0 0 5px 0;
+      color: #2563eb;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Math Game</h1>
+<h3 id="coins"></h3>
+
+<div class="card">
+  <p id="question"></p>
+  <input type="number" id="answer" placeholder="Your answer">
+  <button id="submitBtn">Submit</button>
+  <p id="msg"></p>
+
+  <div id="hints-box">
+    <h4>Hints:</h4>
+    <div id="hints"></div>
+  </div>
+</div>
+
+<script src="math.js"></script>
+</body>
+</html>
