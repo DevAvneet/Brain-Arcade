@@ -1,36 +1,86 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
   background: #0f172a;
   color: white;
   text-align: center;
-  padding-top: 60px;
+  padding: 20px;
+}
+
+h1 {
+  font-size: clamp(28px, 6vw, 42px);
+  color: #facc15;
+}
+
+h3 {
+  font-size: clamp(16px, 4vw, 22px);
+}
+
+.card {
+  background: #020617;
+  padding: 25px;
+  width: 90%;
+  max-width: 420px;
+  margin: 20px auto;
+  border-radius: 14px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.6);
+}
+
+button, input, select {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+}
+
+input, select {
+  padding: 10px;
 }
 
 button {
-  padding: 10px 20px;
-  margin: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
   background: #2563eb;
   color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1e40af;
 }
 
 button:disabled {
   background: gray;
+  cursor: not-allowed;
 }
 
-input {
-  padding: 8px;
-  font-size: 16px;
+#msg {
+  min-height: 40px;
   margin-top: 10px;
 }
-.card {
-  background: #020617;
-  padding: 30px;
-  width: 300px;
-  margin: auto;
+
+#hints-box {
+  background: #111827;
+  border: 1px solid #2563eb;
+  padding: 12px;
+  margin-top: 15px;
   border-radius: 10px;
-  box-shadow: 0 0 10px black;
+  color: #facc15;
+  text-align: left;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.game-card {
+  width: 90%;
+  max-width: 320px;
 }

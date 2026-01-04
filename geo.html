@@ -1,36 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Geography Game</title>
-  <style>
-    body { background:#0f172a; color:white; font-family:Arial; text-align:center; padding-top:50px;}
-    .card { background:#020617; padding:25px; width:400px; margin:auto; border-radius:10px; }
-    button, input { padding:10px; margin-top:10px; width:90%; }
-    #msg { min-height: 40px; margin-top:10px; }
-
-    /* Hint box styling like Math Game */
-    #hints-box {
-      display: none;
-      background: #111827;
-      border: 1px solid #2563eb;
-      padding: 10px;
-      margin-top: 15px;
-      border-radius: 8px;
-      min-height: 50px;
-      color: #facc15;
-      text-align: left;
-    }
-    #hints-box h4 {
-      margin: 0 0 5px 0;
-      color: #2563eb;
-      font-size: 16px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <h1>Geography Quiz</h1>
-<h3 id="coins"></h3>
+<h3 id="coins">🪙 Coins: 0</h3>
 
 <div class="card">
   <p id="question"></p>
@@ -39,103 +17,11 @@
   <p id="msg"></p>
 
   <div id="hints-box">
-    <h4>Hints:</h4>
+    <h4>Hints</h4>
     <div id="hints"></div>
   </div>
 </div>
 
-<script>
-let coins = Number(localStorage.getItem("coins")) || 0;
-document.getElementById("coins").innerText = "🪙 Coins: " + coins;
-
-let difficulty = localStorage.getItem("geo_difficulty") || "easy";
-const cooldowns = { easy: 10*60*1000, medium: 20*60*1000, hard: 30*60*1000 };
-const lastKey = "geoLast_" + difficulty;
-let msg = document.getElementById("msg");
-
-let currentCountry = null;
-let hints = [];
-
-// Countries with multiple hints
-const countriesData = {
-  easy: [
-    {name:"India", hints:["It is in Asia","Famous for Taj Mahal","Population over 1B","Known for spices"]},
-    {name:"Japan", hints:["Asia","Island country","Famous for sushi","Land of the rising sun"]},
-    {name:"USA", hints:["North America","Has 50 states","Popular for Hollywood","Capital is Washington D.C."]},
-    {name:"Canada", hints:["North America","Maple syrup famous","Second largest country","Capital is Ottawa"]},
-    {name:"Italy", hints:["Europe","Famous for pasta and pizza","Capital is Rome","Located in Mediterranean"]}
-  ],
-  medium: [
-    {name:"France", hints:["Europe","Known for Eiffel Tower","Famous for wine","Capital is Paris"]},
-    {name:"Brazil", hints:["South America","Football is popular","Amazon rainforest","Largest country in SA"]},
-    {name:"Egypt", hints:["Africa","Pyramids","Nile river","Capital is Cairo"]},
-    {name:"Russia", hints:["Largest country in the world","Spans Europe & Asia","Famous for cold winters","Capital is Moscow"]},
-    {name:"Argentina", hints:["South America","Tango dance originated","Famous for beef","Capital is Buenos Aires"]}
-  ],
-  hard: [
-    {name:"Bhutan", hints:["Small Asian country","Himalayan kingdom","Known for happiness index","Capital is Thimphu"]},
-    {name:"Suriname", hints:["South America","Dutch-speaking","Forest coverage high","Capital is Paramaribo"]},
-    {name:"Belize", hints:["Central America","Barrier reef","Former British colony","Capital is Belmopan"]},
-    {name:"Mongolia", hints:["Landlocked country","Famous for Genghis Khan","Large grasslands","Capital is Ulaanbaatar"]},
-    {name:"Madagascar", hints:["Island off Africa","Unique wildlife","Famous for lemurs","Capital is Antananarivo"]}
-  ]
-};
-
-// Pick random country
-function pickCountry(){
-  let pool = countriesData[difficulty];
-  currentCountry = pool[Math.floor(Math.random()*pool.length)];
-
-  // Determine number of hints based on difficulty
-  let hintCount = difficulty === "easy" ? 2 : difficulty === "medium" ? 3 : 4;
-  hints = currentCountry.hints.slice(0, hintCount); // pick first N hints
-  hints = hints.sort(()=>Math.random()-0.5); // shuffle
-
-  document.getElementById("question").innerText = "_ ".repeat(currentCountry.name.length);
-
-  // Show hints box immediately
-  document.getElementById("hints-box").style.display = "block";
-  document.getElementById("hints").innerHTML = hints.join("<br>");
-  msg.innerText = "";
-}
-
-// Cooldown
-function checkCooldown(){
-  let last = Number(localStorage.getItem(lastKey)) || 0;
-  let now = Date.now();
-  if(now - last < cooldowns[difficulty]){
-    let mins = Math.ceil((cooldowns[difficulty] - (now - last))/60000);
-    msg.innerText = `⏳ Come back in ${mins} min`;
-    document.getElementById("submitBtn").disabled = true;
-    return false;
-  } else {
-    document.getElementById("submitBtn").disabled = false;
-    return true;
-  }
-}
-
-pickCountry();
-checkCooldown();
-
-// Submit answer
-document.getElementById("submitBtn").onclick = () => {
-  if(!checkCooldown()) return;
-  let user = document.getElementById("answer").value.toLowerCase().trim();
-  if(user === currentCountry.name.toLowerCase()){
-    let reward = difficulty==="easy"?5: difficulty==="medium"?10:20;
-    coins += reward;
-    localStorage.setItem("coins", coins);
-    document.getElementById("coins").innerText = "🪙 Coins: " + coins;
-    msg.innerText = `✅ Correct! +${reward} coins`;
-    msg.style.color = "green";
-    localStorage.setItem(lastKey, Date.now());
-    document.getElementById("submitBtn").disabled = true;
-  } else {
-    msg.innerText = "❌ Wrong, try again";
-    msg.style.color = "red";
-  }
-};
-</script>
-
+<script src="geo.js"></script>
 </body>
 </html>

@@ -1,97 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mini Games</title>
-  <style>
-    body {
-      background: #0f172a;
-      color: white;
-      font-family: 'Arial', sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 50px 20px;
-    }
-
-    h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
-      color: #facc15;
-      text-shadow: 0 0 10px #facc15;
-    }
-
-    #coins {
-      font-size: 24px;
-      margin-bottom: 40px;
-      color: #22c55e;
-    }
-
-    .game-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-    }
-
-    .game-card {
-      background: #020617;
-      padding: 30px;
-      width: 250px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-    }
-
-    .game-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 30px #2563eb;
-    }
-
-    .game-card h2 {
-      font-size: 28px;
-      margin-bottom: 15px;
-      color: #2563eb;
-    }
-
-    .game-card p {
-      font-size: 16px;
-      color: #cbd5e1;
-      margin-bottom: 10px;
-    }
-
-    .reward {
-      font-size: 16px;
-      color: #facc15;
-      margin-bottom: 15px;
-    }
-
-    .game-card button {
-      padding: 12px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background: #2563eb;
-      color: white;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .game-card button:hover {
-      background: #1e40af;
-    }
-
-    select {
-      padding: 8px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: none;
-      margin-bottom: 10px;
-    }
-
-    @media(max-width: 800px) {
-      .game-container { flex-direction: column; align-items: center; }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -99,93 +11,47 @@
 <h3 id="coins">🪙 Coins: 0</h3>
 
 <div class="game-container">
-  <div class="game-card">
+
+  <div class="card">
     <h2>Math</h2>
-    <p>Solve random math questions to earn coins!</p>
-    <div class="reward" id="mathReward">Reward: 5 coins</div>
     <select id="mathDiff">
       <option value="easy">Easy</option>
       <option value="medium">Medium</option>
       <option value="hard">Hard</option>
     </select>
-    <button onclick="playGame('math')">Play</button>
+    <button onclick="play('math')">Play</button>
   </div>
 
-  <div class="game-card">
+  <div class="card">
     <h2>Geography</h2>
-    <p>Guess countries and earn coins! Use hints wisely.</p>
-    <div class="reward" id="geoReward">Reward: 5 coins</div>
     <select id="geoDiff">
       <option value="easy">Easy</option>
       <option value="medium">Medium</option>
       <option value="hard">Hard</option>
     </select>
-    <button onclick="playGame('geo')">Play</button>
+    <button onclick="play('geo')">Play</button>
   </div>
 
-  <div class="game-card">
+  <div class="card">
     <h2>Guess Number</h2>
-    <p>Guess the secret number to earn coins!</p>
-    <div class="reward" id="guessReward">Reward: 5 coins</div>
     <select id="guessDiff">
       <option value="easy">Easy</option>
       <option value="medium">Medium</option>
       <option value="hard">Hard</option>
     </select>
-    <button onclick="playGame('guess')">Play</button>
+    <button onclick="play('guess')">Play</button>
   </div>
+
 </div>
 
 <script>
 let coins = Number(localStorage.getItem("coins")) || 0;
 document.getElementById("coins").innerText = "🪙 Coins: " + coins;
 
-// Reward mapping
-const rewards = {
-  math: { easy: 5, medium: 10, hard: 20 },
-  geo: { easy: 5, medium: 10, hard: 20 },
-  guess: { easy: 5, medium: 10, hard: 20 }
-};
-
-// Update reward display
-function updateReward(game) {
-  let diff;
-  let rewardDiv;
-  if(game === "math") {
-    diff = document.getElementById("mathDiff").value;
-    rewardDiv = document.getElementById("mathReward");
-  } else if(game === "geo") {
-    diff = document.getElementById("geoDiff").value;
-    rewardDiv = document.getElementById("geoReward");
-  } else {
-    diff = document.getElementById("guessDiff").value;
-    rewardDiv = document.getElementById("guessReward");
-  }
-  rewardDiv.innerText = "Reward: " + rewards[game][diff] + " coins";
-}
-
-// Attach change listeners
-document.getElementById("mathDiff").onchange = () => updateReward("math");
-document.getElementById("geoDiff").onchange = () => updateReward("geo");
-document.getElementById("guessDiff").onchange = () => updateReward("guess");
-
-// Initialize reward displays
-updateReward("math");
-updateReward("geo");
-updateReward("guess");
-
-// Redirect to game with selected difficulty
-function playGame(game) {
-  let diff;
-  if(game === "math") diff = document.getElementById("mathDiff").value;
-  else if(game === "geo") diff = document.getElementById("geoDiff").value;
-  else diff = document.getElementById("guessDiff").value;
-
-  // Save difficulty for the game
+function play(game){
+  let diff = document.getElementById(game + "Diff").value;
   localStorage.setItem(game + "_difficulty", diff);
-
-  // Open the game page
-  window.location.href = game + ".html";
+  location.href = game + ".html";
 }
 </script>
 
